@@ -1,0 +1,5 @@
+.idea/
+.gopath/
+vendor/
+bin/
+server.yaml

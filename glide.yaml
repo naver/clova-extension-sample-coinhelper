@@ -1,0 +1,3 @@
+package: coinHelper
+import:
+- package: github.com/dustin/go-humanize
