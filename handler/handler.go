@@ -4,6 +4,7 @@ import (
 	"coinHelper/intent"
 	"coinHelper/protocol"
 	"encoding/json"
+	"io/ioutil"
 	"log"
 	"net/http"
 )
@@ -20,10 +21,22 @@ func ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	var request protocol.CEKRequest
 
-	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
+	defer r.Body.Close()
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		log.Println("Error during reading Request body")
+		respondError(w, msgError)
+		return
+	}
+
+	if err := json.Unmarshal(body, &request); err != nil {
 		log.Println("Error during parsing Request JSON ")
 		respondError(w, msgError)
 		return
+	}
+
+	if !protocol.CheckSignature(r, body) {
+		log.Println("Error during verifying signature")
 	}
 
 	switch request.Request.Type {
