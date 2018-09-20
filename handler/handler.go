@@ -35,7 +35,9 @@ func ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !protocol.CheckSignature(r, body) {
+	if protocol.CheckSignature(r, body) {
+		log.Println("Valid request from CLOVA")
+	} else {
 		log.Println("Error during verifying signature")
 	}
 
